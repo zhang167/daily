@@ -1,0 +1,29 @@
+function [s]=membership_cka(feature,label,g)
+[Row,Column]=size(feature);
+k=zeros(Row,Row);
+for i = 1:Row 
+for j = 1:Row    
+k(i,j) = exp(-g*norm(feature(i,:)-feature(j,:))^2);
+end
+end
+I=eye(Row,Row); 
+e=ones(Row,1);
+H=I-[(e*e')/Row];     
+k1=H*k*H;
+
+h=zeros(10,10);
+dt=zeros(1,10);
+
+%% Calculate the CKA value of each sample
+ickp=zeros(Row,Row);
+for i = 1:Row 
+for j = 1:Row    
+if label(i)==label(j)
+    ickp(i,j)=k1(i,j);
+else
+     ickp(i,j)=-k1(i,j);
+end
+dt(i)=sum(ickp(i));
+end
+end
+[s, p] = mapminmax(dt, 0, 1); 

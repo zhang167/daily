@@ -1,0 +1,22 @@
+function [s]=membership_kta(feature,label,g)
+[Row,Column]=size(feature);
+k=zeros(Row,Row);
+for i = 1:Row 
+for j = 1:Row    
+k(i,j) = exp(-g*norm(feature(i,:)-feature(j,:))^2);
+end
+end
+
+%% Calculate the KTA value of each sample
+ikta=zeros(Row,Row);
+for i = 1:Row 
+for j = 1:Row    
+if label(i)==label(j)
+    ikta(i,j)= k(i,j);
+else
+     ikta(i,j)=-k(i,j);
+end
+dt(i)=sum(ikta(i));
+end
+end
+[s, p] = mapminmax(dt, 0, 1); 

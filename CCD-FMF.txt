@@ -1,0 +1,34 @@
+%% 
+[groupIndex, groupString] = grp2idx(gui_label);       
+groupIndex = 1 - (2* (groupIndex-1));      
+Xp=gui_feature(groupIndex==1,:);     
+Lp=gui_label(groupIndex==1);      
+Xn=gui_feature(groupIndex==-1,:);     
+Ln=gui_label(groupIndex==-1);        
+Xp_cen=mean(Xp);
+Xn_cen=mean(Xn);
+[rp,cp]=size(Xp);
+[rn,cn]=size(Xn);
+eplison=1e-10;
+%% 
+kxp=zeros(rp,rp);
+for i = 1:rp
+for j = 1:rp
+kxp(i,j) = exp(-g*norm(Xp(i,:)-Xp(j,:))^2);         
+end
+end
+
+radiusxp=1-2*mean(kxp,2)+mean(mean(kxp));
+radiusmaxxp=max(radiusxp);           
+Sp=1-sqrt(abs(radiusxp)./(radiusmaxxp+eplison));     
+
+ %% 
+kxn=zeros(rn,rn);
+for i = 1:rn
+for j = 1:rn
+kxn(i,j) = exp(-g*norm(Xn(i,:)-Xn(j,:))^2);  
+end
+end
+radiusxn=1-2*mean(kxn,2)+mean(mean(kxn));
+radiusmaxxn=max(radiusxn);           
+Sn=1-sqrt(abs(radiusxn)./(radiusmaxxn+eplison));         
